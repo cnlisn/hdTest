@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
 
 //apply plugin: 'com.github.dcendents.android-maven'
 //apply plugin: 'com.jfrog.bintray'
@@ -11,7 +10,7 @@ android {
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 9
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -35,20 +34,190 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
 }
-publish {
+
+//ext {
+//    PUBLISH_GROUP_ID = 'com.lisn'
+//    PUBLISH_ARTIFACT_ID = 'xhd'
+//    PUBLISH_VERSION = '1.0'
+//}
+//
+//apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
+////最终生成的compile地址：compile 'com.github.xiaozhucdj:sildbacklibrary:1.0'
+////terminal中执行gradlew clean build generateRelease
+
+//--------------------
+
+//region
+
+/*
+//region Description
+//以下开始是将Android Library上传到jcenter的相关配置
+
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+//项目主页
+def siteUrl = 'https://github.com/cnlisn'    // project homepage
+//项目的版本控制地址
+def gitUrl = 'https://github.com/cnlisn' // project git
+
+//发布到组织名称名字，必须填写
+group = "com.lisn"
+//发布到JCenter上的项目名字，必须填写
+def libName = "xhd"
+// 版本号，下次更新是只需要更改版本号即可
+version = "1.00"
+*/
+/**  上面配置后上传至jcenter后的编译路径是这样的： compile 'cn.bluemobi.dylan:sqlitelibrary:1.0'  **//*
+
+
+//生成源文件
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+//生成文档
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    options.links "https://github.com/linglongxin24/FastDev/tree/master/mylibrary/docs/javadoc"
+    failOnError false
+}
+
+//文档打包成jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+//拷贝javadoc文件
+task copyDoc(type: Copy) {
+    from "${buildDir}/docs/"
+    into "docs"
+}
+
+//上传到jcenter所需要的源码文件
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+// 配置maven库，生成POM.xml文件
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                name 'This is a lightweight SQLite database framework'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'This is a lightweight SQLite database framework'
+                        url 'https://github.com/linglongxin24/SQLite'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'ds'
+                        name 'lisn'
+                        email 'cnlishan@163.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+//上传到jcenter
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")    //读取 local.properties 文件里面的 bintray.user
+    key = properties.getProperty("bintray.apikey")   //读取 local.properties 文件里面的 bintray.apikey
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "xhd-utils"    //发布到JCenter上的项目名字，必须填写
+        desc = 'This is a lightweight SQLite database framework'    //项目描述
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
+//endregion
+*/
+
+//gradlew install
+//endregion
+//--------------------
+
+/*
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'xhd-library'
+
+    publishedGroupId = 'com.lisn'
+    libraryName = 'xhd'
+    artifact = 'lisn'
+
+    libraryDescription = 'a xhd for android'
+
+    siteUrl = 'https://github.com/cnlisn'
+    gitUrl = 'https://github.com/cnlisn'
+
+    libraryVersion = '1.1.0'
+
+    developerId = 'xhd'
+    developerName = 'lisn'
+    developerEmail = '954375802@qq.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+*/
+
+//--------------------
+
+/*publish {
     userOrg = 'cnlisn18'      //bintray注册的用户名
-    groupId = 'com.lisn'         //compile引用时的第1部分groupId
+    groupId = 'com.lisn.hdtest'         //compile引用时的第1部分groupId
     artifactId = 'xhd'     //compile引用时的第2部分项目名
-    publishVersion = '1.00'    //compile引用时的第3部分版本号
+    publishVersion = '1.0.0'    //compile引用时的第3部分版本号
     desc = 'This is a xhd library'
     website = 'https://github.com/cnlisn'
 
-    //上传命令 ./gradlew clean build -x test bintrayUpload -PbintrayUser=tangsiyuan -PbintrayKey=BINTRAY_KEY -PdryRun=false
-}
+    //上传命令 ./gradlew clean build -x test bintrayUpload -PbintrayUser=cnlisn18 -PbintrayKey=8d19d24365415bfe79239c8db0327eb861042b02 -PdryRun=false
+    //上传命令 ./gradlew clean build -x test bintrayUpload -PbintrayUser=cnlisn18 -PbintrayKey=8d19d24365415bfe79239c8db0327eb861042b02 -PdryRun=false
+}*/
 
+apply plugin: 'com.novoda.bintray-release'//添加
+
+//添加
+publish {
+    userOrg = 'cnlisn18'//bintray.com用户名
+    groupId = 'com.lisn'//jcenter上的路径
+    artifactId = 'xhd'//项目名称
+    publishVersion = '1.0.0'//版本号
+    desc = 'this is for test'//描述，不重要
+    website = 'https://github.com/cnlisn'//网站，最好有，不重要
+}
 //--------------------
 /*
 //region 11
@@ -70,7 +239,7 @@ install {
         // This generates POM.xml with proper parameters
         pom {
             project {
-                packaging 'com.lisn.xhd'
+                packaging 'aar'
                 // Add your description here
                 name 'xhd'     //项目描述
                 url siteUrl
@@ -324,3 +493,6 @@ bintray {
     }
 }
 */
+
+//---------------
+
